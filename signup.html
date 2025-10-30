@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <style>
+    body {
+      text-align: center;
+      margin: 100px;
+      border: 3px solid gray;
+      font-family: Arial, sans-serif;
+    }
+    input, select {
+      width: 220px;
+      height: 30px;
+      margin: 10px;
+      padding: 5px;
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <h1>Signup</h1>
+  <form id="signupForm">
+    <input type="text" id="username" name="username" placeholder="Username" required><br>
+    <input type="email" id="email" name="email" placeholder="Email" required><br>
+    <input type="password" id="password" name="password" placeholder="Create new password" required><br>
+    <select id="classType" name="option" required>
+      <option value="">--Select Class Type--</option>
+      <option value="one">One-on-One Teaching</option>
+      <option value="group">Group Teaching</option>
+    </select><br>
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <p>Better learning platform compared to others...</p>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbybub3RCodadH9iBkwQmrd3fohDT1IKkwwSG1zRdoM4kz7U7yJ9QLVMK5zDcmdWegXjcQ/exec'; // replace with your Apps Script Web App URL
+    const form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const option = document.getElementById('classType').value;
+
+      if (!username || !email || !password || !option) {
+        alert('⚠️ Please fill in all fields!');
+        return;
+      }
+
+      const userData = { username, email, password, option };
+
+      // 1️⃣ Save in localStorage
+      localStorage.setItem('myDemoUser', JSON.stringify(userData));
+
+
+
+      // 2️⃣ Send to Google Sheet
+      try {
+        await fetch(scriptURL, { method: 'POST', body: new FormData(form) });
+        alert('✅ Signup successful! Data saved to Google Sheet.');
+        form.reset();
+        window.location.href = 'page.html'; // redirect to login page
+      } catch (err) {
+        alert('❌ Failed to send data to Google Sheet: ' + err.message);
+      }
+    });
+
+  </script>
+</body>
+</html>

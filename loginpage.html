@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      text-align: center;
+      margin: 100px;
+      border: 3px solid gray;
+      font-family: Arial, sans-serif;
+    }
+    input, select {
+      width: 220px;
+      height: 30px;
+      margin: 10px;
+      padding: 5px;
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="text" id="loginUsername" name="username" placeholder="Username" required><br>
+    <input type="password" id="loginPassword" name="password" placeholder="Password" required><br>
+    <select id="loginClassType" name="option" required>
+      <option value="">--Select Class Type--</option>
+      <option value="one">One-on-One Teaching</option>
+      <option value="group">Group Teaching</option>
+    </select><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <p>Thank you for taking class!</p>
+
+  <script>
+    // Pre-fill fields if localStorage exists
+    const saved = localStorage.getItem('myDemoUser');
+    if (saved) {
+      const user = JSON.parse(saved);
+      document.getElementById('loginUsername').value = user.username;
+      document.getElementById('loginClassType').value = user.option;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const option = document.getElementById('loginClassType').value;
+
+      const saved = localStorage.getItem('myDemoUser');
+      if (!saved) {
+        alert('No user found. Please sign up first.');
+        return;
+      }
+
+      const user = JSON.parse(saved);
+
+      if (username === user.username && password === user.password && option === user.option) {
+        alert('Login successful ✅');
+        window.location.href = 'page.html'; // go to protected page
+      } else {
+        alert('Invalid credentials ❌');
+      }
+    });
+  </script>
+</body>
+</html>

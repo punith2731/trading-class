@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPortal - Learning Management System</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        html {
+            height: 100%;
+        }
+        .upload-area {
+            border: 2px dashed #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .video-thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .nav-link.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="min-h-full"><!-- Navigation -->
+  <nav class="shadow-sm border-b border-gray-200 sticky top-0 z-40" style="background-color: #ffffff;">
+   <div class="max-w-7xl mx-auto px-6">
+    <div class="flex justify-between items-center h-16">
+     <div class="flex items-center space-x-8">
+      <div class="flex items-center space-x-3">
+       <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center"><span class="text-white font-bold text-lg">E</span>
+       </div><span id="site-title" class="text-xl font-bold" style="color: #1e293b;">EduPortal</span>
+      </div>
+      <div class="hidden md:flex space-x-1"><button class="nav-link px-4 py-2 rounded-lg font-medium" data-page="home">Home</button> <button class="nav-link px-4 py-2 rounded-lg font-medium" data-page="courses">Courses</button> <button class="nav-link px-4 py-2 rounded-lg font-medium" data-page="assignments">Assignments</button> <button class="nav-link px-4 py-2 rounded-lg font-medium" data-page="mentor">Mentor Portal</button> <button class="nav-link px-4 py-2 rounded-lg font-medium" data-page="about">About</button>
+      </div>
+     </div>
+     <div class="flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2">
+       <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background-color: #e5e7eb;"><span class="text-sm font-medium" style="color: #374151;">👤</span>
+       </div><span class="text-sm font-medium" style="color: #374151;">Student</span>
+      </div><button class="md:hidden p-2 rounded-lg" style="color: #6b7280;" onclick="toggleMobileMenu()">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+       </svg></button>
+     </div>
+    </div>
+   </div>
+  </nav><!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-b border-gray-200" style="background-color: #ffffff;">
+   <div class="px-6 py-4 space-y-2"><button class="nav-link block w-full text-left px-4 py-2 rounded-lg font-medium" data-page="home">Home</button> <button class="nav-link block w-full text-left px-4 py-2 rounded-lg font-medium" data-page="courses">Courses</button> <button class="nav-link block w-full text-left px-4 py-2 rounded-lg font-medium" data-page="assignments">Assignments</button> <button class="nav-link block w-full text-left px-4 py-2 rounded-lg font-medium" data-page="mentor">Mentor Portal</button> <button class="nav-link block w-full text-left px-4 py-2 rounded-lg font-medium" data-page="about">About</button>
+   </div>
+  </div><!-- Home Page -->
+  <div id="home-page" class="page active"><!-- Hero Section -->
+   <section class="hero-gradient text-white py-20">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <h1 id="hero-title" class="text-5xl md:text-6xl font-bold mb-6">Welcome to EduPortal</h1>
+     <p id="hero-subtitle" class="text-xl md:text-2xl mb-8 opacity-90">Your complete learning management system for modern education</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button class="nav-link px-8 py-4 rounded-lg font-semibold text-lg transition-colors" style="background-color: #ffffff; color: #3b82f6;" data-page="courses"> Browse Courses </button> <button class="nav-link px-8 py-4 rounded-lg font-semibold text-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-colors" data-page="assignments"> Submit Assignment </button>
+     </div>
+    </div>
+   </section><!-- Features Section -->
+   <section class="py-20" style="background-color: #f8fafc;">
+    <div class="max-w-7xl mx-auto px-6">
+     <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold mb-4" style="color: #1e293b;">Everything You Need to Learn</h2>
+      <p class="text-xl" style="color: #64748b;">Powerful tools for students and educators</p>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="feature-card p-8 rounded-xl text-center" style="background-color: #ffffff;">
+       <div class="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style="background-color: #dbeafe;">
+        <svg class="w-8 h-8" style="color: #3b82f6;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+       </div>
+       <h3 class="text-xl font-semibold mb-4" style="color: #1e293b;">Video Learning</h3>
+       <p style="color: #64748b;">Access course videos and instructional content from your mentors</p>
+      </div>
+      <div class="feature-card p-8 rounded-xl text-center" style="background-color: #ffffff;">
+       <div class="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style="background-color: #dcfce7;">
+        <svg class="w-8 h-8" style="color: #16a34a;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+       </div>
+       <h3 class="text-xl font-semibold mb-4" style="color: #1e293b;">Easy Submissions</h3>
+       <p style="color: #64748b;">Upload assignments with drag-and-drop simplicity</p>
+      </div>
+      <div class="feature-card p-8 rounded-xl text-center" style="background-color: #ffffff;">
+       <div class="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center" style="background-color: #fef3c7;">
+        <svg class="w-8 h-8" style="color: #d97706;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+       </div>
+       <h3 class="text-xl font-semibold mb-4" style="color: #1e293b;">Mentor Tools</h3>
+       <p style="color: #64748b;">Comprehensive tools for educators to manage courses</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Stats Section -->
+   <section class="py-16" style="background-color: #ffffff;">
+    <div class="max-w-7xl mx-auto px-6">
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+       <div class="text-3xl font-bold mb-2" style="color: #3b82f6;" id="total-submissions">
+        0
+       </div>
+       <div class="text-sm font-medium" style="color: #64748b;">
+        Total Submissions
+       </div>
+      </div>
+      <div>
+       <div class="text-3xl font-bold mb-2" style="color: #16a34a;" id="course-videos">
+        0
+       </div>
+       <div class="text-sm font-medium" style="color: #64748b;">
+        Course Videos
+       </div>
+      </div>
+      <div>
+       <div class="text-3xl font-bold mb-2" style="color: #d97706;">
+        24/7
+       </div>
+       <div class="text-sm font-medium" style="color: #64748b;">
+        Available
+       </div>
+      </div>
+      <div>
+       <div class="text-3xl font-bold mb-2" style="color: #dc2626;">
+        100%
+       </div>
+       <div class="text-sm font-medium" style="color: #64748b;">
+        Secure
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </div><!-- Courses Page -->
+  <div id="courses-page" class="page">
+   <div class="min-h-full" style="background-color: #f8fafc;">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+     <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4" style="color: #1e293b;">Course Videos</h1>
+      <p class="text-lg" style="color: #64748b;">Watch instructional videos uploaded by your mentors</p>
+     </div><!-- Live Sessions Section -->
+     <div class="mb-8 p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <div class="flex items-center justify-between mb-6">
+       <h2 class="text-2xl font-semibold" style="color: #1e293b;">Live Sessions</h2>
+       <div class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: #dcfce7; color: #16a34a;"><span id="live-session-count">0 sessions</span>
+       </div>
+      </div>
+      <div id="live-sessions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"><!-- Live sessions will be populated here -->
+      </div>
+      <div id="live-sessions-empty-state" class="text-center py-8">
+       <svg class="mx-auto h-12 w-12 mb-4" style="color: #d1d5db;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+       </svg>
+       <h3 class="text-lg font-medium mb-2" style="color: #6b7280;">No live sessions scheduled</h3>
+       <p style="color: #9ca3af;">Your mentors haven't scheduled any live sessions yet</p>
+      </div>
+     </div><!-- Course Videos Section -->
+     <div class="p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-6" style="color: #1e293b;">Course Videos</h2>
+      <div id="course-videos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Course videos will be populated here -->
+      </div>
+      <div id="course-empty-state" class="text-center py-16">
+       <svg class="mx-auto h-16 w-16 mb-4" style="color: #d1d5db;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+       </svg>
+       <h3 class="text-xl font-medium mb-2" style="color: #6b7280;">No course videos yet</h3>
+       <p style="color: #9ca3af;">Your mentors haven't uploaded any course content yet</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Assignments Page -->
+  <div id="assignments-page" class="page">
+   <div class="min-h-full" style="background-color: #f8fafc;">
+    <div class="max-w-7xl mx-auto px-6 py-8"><!-- Upload Section -->
+     <div class="mb-8 p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Submit Your Assignment</h2>
+      <p id="instructions-text" class="mb-6" style="color: #64748b;">Upload your PDF assignment below. Only PDF files are accepted (Max 10MB)</p>
+      <form id="upload-form" class="space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="student-name" class="block text-sm font-medium mb-2" style="color: #374151;">Student Name</label> <input type="text" id="student-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter your full name">
+        </div>
+        <div><label for="assignment-title" class="block text-sm font-medium mb-2" style="color: #374151;">Assignment Title</label> <input type="text" id="assignment-title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter assignment title">
+        </div>
+       </div>
+       <div><label class="block text-sm font-medium mb-2" style="color: #374151;">PDF File</label>
+        <div id="upload-area" class="upload-area p-8 rounded-lg text-center cursor-pointer"><input type="file" id="video-file" accept=".pdf" class="hidden" required>
+         <div id="upload-content">
+          <svg class="mx-auto h-12 w-12 mb-4" style="color: #9ca3af;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <p class="text-lg font-medium mb-2" style="color: #374151;">Click to upload or drag and drop</p>
+          <p class="text-sm" style="color: #9ca3af;">PDF files up to 10MB</p>
+         </div>
+         <div id="file-info" class="hidden">
+          <svg class="mx-auto h-12 w-12 mb-4" style="color: #10b981;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p id="file-name" class="text-lg font-medium" style="color: #374151;"></p>
+          <p id="file-size" class="text-sm" style="color: #9ca3af;"></p>
+         </div>
+        </div>
+       </div><button type="submit" id="submit-btn" class="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors focus:ring-4 focus:ring-blue-200 outline-none" style="background-color: #3b82f6;"> <span id="submit-text">Submit Assignment</span>
+        <div id="submit-spinner" class="loading-spinner mx-auto hidden"></div></button>
+      </form>
+     </div><!-- Student Submissions -->
+     <div class="p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <div class="flex items-center justify-between mb-6">
+       <h2 class="text-2xl font-semibold" style="color: #1e293b;">Student Submissions</h2>
+       <div class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: #dbeafe; color: #1e40af;"><span id="submission-count">0 submissions</span>
+       </div>
+      </div>
+      <div id="submissions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Submissions will be populated here -->
+      </div>
+      <div id="empty-state" class="text-center py-12">
+       <svg class="mx-auto h-16 w-16 mb-4" style="color: #d1d5db;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+       </svg>
+       <h3 class="text-lg font-medium mb-2" style="color: #6b7280;">No submissions yet</h3>
+       <p style="color: #9ca3af;">Uploaded assignments will appear here</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Mentor Portal Page -->
+  <div id="mentor-page" class="page">
+   <div class="min-h-full" style="background-color: #f8fafc;">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+     <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4" style="color: #1e293b;">Mentor Portal</h1>
+      <p class="text-lg" style="color: #64748b;">Upload course videos and manage student submissions</p>
+     </div><!-- Live Session Scheduling -->
+     <div class="mb-8 p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Schedule Live Session</h2>
+      <p class="mb-6" style="color: #64748b;">Create live meeting sessions for your students</p>
+      <form id="live-session-form" class="space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="session-mentor-name" class="block text-sm font-medium mb-2" style="color: #374151;">Mentor Name</label> <input type="text" id="session-mentor-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter your name">
+        </div>
+        <div><label for="session-title" class="block text-sm font-medium mb-2" style="color: #374151;">Session Title</label> <input type="text" id="session-title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter session title">
+        </div>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="session-date" class="block text-sm font-medium mb-2" style="color: #374151;">Session Date</label> <input type="date" id="session-date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+        </div>
+        <div><label for="session-time" class="block text-sm font-medium mb-2" style="color: #374151;">Session Time</label> <input type="time" id="session-time" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+        </div>
+       </div>
+       <div><label for="meeting-link" class="block text-sm font-medium mb-2" style="color: #374151;">Meeting Link</label> <input type="url" id="meeting-link" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="https://meet.google.com/xxx-xxxx-xxx or https://zoom.us/j/xxxxxxxxx">
+       </div>
+       <div><label for="session-description" class="block text-sm font-medium mb-2" style="color: #374151;">Session Description</label> <textarea id="session-description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Describe what will be covered in this live session"></textarea>
+       </div><button type="submit" id="session-submit-btn" class="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors focus:ring-4 focus:ring-purple-200 outline-none" style="background-color: #7c3aed;"> <span id="session-submit-text">Schedule Live Session</span>
+        <div id="session-submit-spinner" class="loading-spinner mx-auto hidden"></div></button>
+      </form>
+     </div><!-- Course Video Upload -->
+     <div class="mb-8 p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Upload Course Video</h2>
+      <p class="mb-6" style="color: #64748b;">Share instructional content with your students</p>
+      <form id="mentor-upload-form" class="space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="mentor-name" class="block text-sm font-medium mb-2" style="color: #374151;">Mentor Name</label> <input type="text" id="mentor-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter your name">
+        </div>
+        <div><label for="course-video-title" class="block text-sm font-medium mb-2" style="color: #374151;">Video Title</label> <input type="text" id="course-video-title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Enter video title">
+        </div>
+       </div>
+       <div><label for="course-description" class="block text-sm font-medium mb-2" style="color: #374151;">Description</label> <textarea id="course-description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Describe what students will learn from this video"></textarea>
+       </div>
+       <div><label class="block text-sm font-medium mb-2" style="color: #374151;">Course Video File</label>
+        <div id="mentor-upload-area" class="upload-area p-8 rounded-lg text-center cursor-pointer"><input type="file" id="mentor-video-file" accept="video/*" class="hidden" required>
+         <div id="mentor-upload-content">
+          <svg class="mx-auto h-12 w-12 mb-4" style="color: #9ca3af;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          <p class="text-lg font-medium mb-2" style="color: #374151;">Click to upload or drag and drop</p>
+          <p class="text-sm" style="color: #9ca3af;">MP4, MOV, AVI up to 100MB</p>
+         </div>
+         <div id="mentor-file-info" class="hidden">
+          <svg class="mx-auto h-12 w-12 mb-4" style="color: #10b981;" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p id="mentor-file-name" class="text-lg font-medium" style="color: #374151;"></p>
+          <p id="mentor-file-size" class="text-sm" style="color: #9ca3af;"></p>
+         </div>
+        </div>
+       </div><button type="submit" id="mentor-submit-btn" class="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors focus:ring-4 focus:ring-green-200 outline-none" style="background-color: #16a34a;"> <span id="mentor-submit-text">Upload Course Video</span>
+        <div id="mentor-submit-spinner" class="loading-spinner mx-auto hidden"></div></button>
+      </form>
+     </div><!-- All Submissions Overview -->
+     <div class="p-6 rounded-xl shadow-sm" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-6" style="color: #1e293b;">All Student Submissions</h2>
+      <div id="mentor-submissions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- All submissions will be populated here -->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- About Page -->
+  <div id="about-page" class="page">
+   <div class="min-h-full" style="background-color: #f8fafc;">
+    <div class="max-w-4xl mx-auto px-6 py-16">
+     <div class="text-center mb-16">
+      <h1 class="text-4xl font-bold mb-6" style="color: #1e293b;">About EduPortal</h1>
+      <p class="text-xl" style="color: #64748b;">Empowering education through technology</p>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+      <div>
+       <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Our Mission</h2>
+       <p class="mb-4" style="color: #64748b;">EduPortal is designed to bridge the gap between students and educators through seamless digital learning experiences. We believe that education should be accessible, engaging, and efficient for everyone.</p>
+       <p style="color: #64748b;">Our platform provides the tools needed for modern education, from video-based learning to assignment management, all in one integrated system.</p>
+      </div>
+      <div>
+       <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Key Features</h2>
+       <ul class="space-y-3" style="color: #64748b;">
+        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> Video-based course content delivery</li>
+        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> Easy assignment submission system</li>
+        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> Mentor tools for content management</li>
+        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> Secure data storage and management</li>
+        <li class="flex items-start"><span class="text-green-500 mr-2">✓</span> Responsive design for all devices</li>
+       </ul>
+      </div>
+     </div>
+     <div class="text-center p-8 rounded-xl" style="background-color: #ffffff;">
+      <h2 class="text-2xl font-semibold mb-4" style="color: #1e293b;">Get Started Today</h2>
+      <p class="mb-6" style="color: #64748b;">Join thousands of students and educators already using EduPortal to enhance their learning experience.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center"><button class="nav-link px-6 py-3 rounded-lg font-semibold text-white transition-colors" style="background-color: #3b82f6;" data-page="courses"> Browse Courses </button> <button class="nav-link px-6 py-3 rounded-lg font-semibold border-2 transition-colors" style="border-color: #3b82f6; color: #3b82f6;" data-page="assignments"> Submit Assignment </button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Footer -->
+  <footer class="border-t border-gray-200 py-12" style="background-color: #ffffff;">
+   <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+     <div class="col-span-1 md:col-span-2">
+      <div class="flex items-center space-x-3 mb-4">
+       <div class="w-8 h-8 rounded-lg hero-gradient flex items-center justify-center"><span class="text-white font-bold text-lg">E</span>
+       </div><span class="text-xl font-bold" style="color: #1e293b;">EduPortal</span>
+      </div>
+      <p class="mb-4" style="color: #64748b;">Modern learning management system for the digital age. Connecting students and educators worldwide.</p>
+      <p class="text-sm" style="color: #9ca3af;">© 2024 EduPortal. All rights reserved.</p>
+     </div>
+     <div>
+      <h3 class="font-semibold mb-4" style="color: #1e293b;">Quick Links</h3>
+      <ul class="space-y-2">
+       <li><button class="nav-link text-sm hover:underline" style="color: #64748b;" data-page="home">Home</button></li>
+       <li><button class="nav-link text-sm hover:underline" style="color: #64748b;" data-page="courses">Courses</button></li>
+       <li><button class="nav-link text-sm hover:underline" style="color: #64748b;" data-page="assignments">Assignments</button></li>
+       <li><button class="nav-link text-sm hover:underline" style="color: #64748b;" data-page="about">About</button></li>
+      </ul>
+     </div>
+     <div>
+      <h3 class="font-semibold mb-4" style="color: #1e293b;">Support</h3>
+      <ul class="space-y-2">
+       <li><a href="#" class="text-sm hover:underline" style="color: #64748b;">Help Center</a></li>
+       <li><a href="#" class="text-sm hover:underline" style="color: #64748b;">Contact Us</a></li>
+       <li><a href="#" class="text-sm hover:underline" style="color: #64748b;">Privacy Policy</a></li>
+       <li><a href="#" class="text-sm hover:underline" style="color: #64748b;">Terms of Service</a></li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </footer><!-- PDF Viewer Modal -->
+  <div id="pdf-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+   <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-full flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+     <h3 id="pdf-modal-title" class="text-lg font-semibold" style="color: #1e293b;">View PDF Assignment</h3><button onclick="closePDFModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+      <svg class="w-6 h-6" style="color: #6b7280;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg></button>
+    </div>
+    <div class="flex-1 p-4 overflow-hidden"><iframe id="pdf-viewer" class="w-full h-96 border border-gray-300 rounded-lg" style="min-height: 500px;"></iframe>
+    </div>
+    <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+     <div>
+      <p id="pdf-student-name" class="text-sm font-medium" style="color: #374151;"></p>
+      <p id="pdf-submission-date" class="text-xs" style="color: #9ca3af;"></p>
+     </div><button onclick="downloadPDF()" id="download-pdf-btn" class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:bg-green-700" style="background-color: #16a34a;"> Download PDF </button>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Configuration
+        const defaultConfig = {
+            site_title: "EduPortal",
+            hero_title: "Welcome to EduPortal",
+            hero_subtitle: "Your complete learning management system for modern education",
+            instructions_text: "Upload your PDF assignment below. Only PDF files are accepted (Max 10MB)",
+            background_color: "#f8fafc",
+            surface_color: "#ffffff",
+            text_color: "#1e293b",
+            primary_action_color: "#3b82f6",
+            secondary_text_color: "#64748b"
+        };
+
+        let submissions = [];
+        let courseVideos = [];
+        let liveSessions = [];
+        let currentPage = 'home';
+        let isInitialized = false;
+
+        // Data handler for SDK
+        const dataHandler = {
+            onDataChanged(data) {
+                const allData = data || [];
+                submissions = allData.filter(item => item.type === 'assignment');
+                courseVideos = allData.filter(item => item.type === 'course_video');
+                liveSessions = allData.filter(item => item.type === 'live_session');
+                updateAllDisplays();
+            }
+        };
+
+        // Element SDK functions
+        async function onConfigChange(config) {
+            const siteTitle = config.site_title || defaultConfig.site_title;
+            const heroTitle = config.hero_title || defaultConfig.hero_title;
+            const heroSubtitle = config.hero_subtitle || defaultConfig.hero_subtitle;
+            const instructionsText = config.instructions_text || defaultConfig.instructions_text;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+            const secondaryTextColor = config.secondary_text_color || defaultConfig.secondary_text_color;
+
+            document.getElementById('site-title').textContent = siteTitle;
+            document.getElementById('hero-title').textContent = heroTitle;
+            document.getElementById('hero-subtitle').textContent = heroSubtitle;
+            document.getElementById('instructions-text').textContent = instructionsText;
+            
+            // Apply colors
+            document.querySelectorAll('[style*="background-color: #f8fafc"]').forEach(el => {
+                el.style.backgroundColor = backgroundColor;
+            });
+            document.querySelectorAll('[style*="background-color: #ffffff"]').forEach(el => {
+                el.style.backgroundColor = surfaceColor;
+            });
+            document.querySelectorAll('[style*="color: #1e293b"]').forEach(el => {
+                el.style.color = textColor;
+            });
+            document.querySelectorAll('[style*="background-color: #3b82f6"]').forEach(el => {
+                el.style.backgroundColor = primaryActionColor;
+            });
+            document.querySelectorAll('[style*="color: #64748b"]').forEach(el => {
+                el.style.color = secondaryTextColor;
+            });
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ surface_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                        set: (value) => {
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ primary_action_color: value });
+                            }
+                        }
+                    },
+                    {
+                        get: () => config.secondary_text_color || defaultConfig.secondary_text_color,
+                        set: (value) => {
+                            if (window.elementSdk) {
+                                window.elementSdk.setConfig({ secondary_text_color: value });
+                            }
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family || 'Inter',
+                    set: (value) => {
+                        if (window.elementSdk) {
+                            window.elementSdk.setConfig({ font_family: value });
+                        }
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size || 16,
+                    set: (value) => {
+                        if (window.elementSdk) {
+                            window.elementSdk.setConfig({ font_size: value });
+                        }
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["site_title", config.site_title || defaultConfig.site_title],
+                ["hero_title", config.hero_title || defaultConfig.hero_title],
+                ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+                ["instructions_text", config.instructions_text || defaultConfig.instructions_text]
+            ]);
+        }
+
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelectorAll(`[data-page="${pageId}"]`).forEach(link => {
+                link.classList.add('active');
+            });
+            
+            currentPage = pageId;
+            
+            // Hide mobile menu
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Initialize SDKs
+        async function initializeApp() {
+            try {
+                // Initialize Element SDK
+                if (window.elementSdk) {
+                    await window.elementSdk.init({
+                        defaultConfig,
+                        onConfigChange,
+                        mapToCapabilities,
+                        mapToEditPanelValues
+                    });
+                }
+
+                // Initialize Data SDK
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.init(dataHandler);
+                    if (!result.isOk) {
+                        console.error("Failed to initialize data SDK");
+                        return;
+                    }
+                }
+
+                isInitialized = true;
+                setupEventListeners();
+            } catch (error) {
+                console.error("Failed to initialize app:", error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPage(link.dataset.page);
+                });
+            });
+
+            // Student assignment upload
+            setupAssignmentUpload();
+            
+            // Mentor course video upload
+            setupMentorUpload();
+            
+            // Live session scheduling
+            setupLiveSessionForm();
+        }
+
+        // Setup assignment upload functionality
+        function setupAssignmentUpload() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('video-file');
+            const form = document.getElementById('upload-form');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    fileInput.files = files;
+                    handleFileSelect(files[0], 'student');
+                } else if (files.length > 0) {
+                    showMessage("Please select a PDF file only.", "error");
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    if (file.type === 'application/pdf') {
+                        handleFileSelect(file, 'student');
+                    } else {
+                        showMessage("Please select a PDF file only.", "error");
+                        e.target.value = '';
+                    }
+                }
+            });
+
+            form.addEventListener('submit', handleAssignmentSubmit);
+        }
+
+        // Setup mentor upload functionality
+        function setupMentorUpload() {
+            const mentorUploadArea = document.getElementById('mentor-upload-area');
+            const mentorFileInput = document.getElementById('mentor-video-file');
+            const mentorForm = document.getElementById('mentor-upload-form');
+
+            mentorUploadArea.addEventListener('click', () => mentorFileInput.click());
+            
+            mentorUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                mentorUploadArea.classList.add('dragover');
+            });
+
+            mentorUploadArea.addEventListener('dragleave', () => {
+                mentorUploadArea.classList.remove('dragover');
+            });
+
+            mentorUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                mentorUploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('video/')) {
+                    mentorFileInput.files = files;
+                    handleFileSelect(files[0], 'mentor');
+                }
+            });
+
+            mentorFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0], 'mentor');
+                }
+            });
+
+            mentorForm.addEventListener('submit', handleMentorSubmit);
+        }
+
+        // Setup live session form
+        function setupLiveSessionForm() {
+            const sessionForm = document.getElementById('live-session-form');
+            sessionForm.addEventListener('submit', handleLiveSessionSubmit);
+        }
+
+        // Handle file selection
+        function handleFileSelect(file, type) {
+            const prefix = type === 'mentor' ? 'mentor-' : '';
+            const uploadContent = document.getElementById(prefix + 'upload-content');
+            const fileInfo = document.getElementById(prefix + 'file-info');
+            const fileName = document.getElementById(prefix + 'file-name');
+            const fileSize = document.getElementById(prefix + 'file-size');
+
+            uploadContent.classList.add('hidden');
+            fileInfo.classList.remove('hidden');
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+        }
+
+        // Handle assignment submission
+        async function handleAssignmentSubmit(e) {
+            e.preventDefault();
+            
+            if (submissions.length >= 999) {
+                showMessage("Maximum limit of 999 submissions reached. Please contact your instructor.", "error");
+                return;
+            }
+
+            const studentName = document.getElementById('student-name').value.trim();
+            const assignmentTitle = document.getElementById('assignment-title').value.trim();
+            const fileInput = document.getElementById('video-file');
+            
+            if (!studentName || !assignmentTitle || !fileInput.files[0]) {
+                showMessage("Please fill in all fields and select a PDF file.", "error");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            
+            // Check file size (10MB limit for PDFs)
+            if (file.size > 10 * 1024 * 1024) {
+                showMessage("File size must be less than 10MB.", "error");
+                return;
+            }
+            
+            setLoadingState(true, 'student');
+
+            try {
+                const pdfUrl = URL.createObjectURL(file);
+                
+                const submissionData = {
+                    type: 'assignment',
+                    student_name: studentName,
+                    assignment_title: assignmentTitle,
+                    pdf_url: pdfUrl,
+                    submission_date: new Date().toISOString(),
+                    file_size: formatFileSize(file.size)
+                };
+
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(submissionData);
+                    
+                    if (result.isOk) {
+                        showMessage("Assignment submitted successfully!", "success");
+                        resetForm('student');
+                    } else {
+                        showMessage("Failed to submit assignment. Please try again.", "error");
+                    }
+                } else {
+                    submissions.push({ ...submissionData, __backendId: Date.now().toString() });
+                    updateAllDisplays();
+                    showMessage("Assignment submitted successfully!", "success");
+                    resetForm('student');
+                }
+            } catch (error) {
+                showMessage("An error occurred while submitting. Please try again.", "error");
+            } finally {
+                setLoadingState(false, 'student');
+            }
+        }
+
+        // Handle mentor submission
+        async function handleMentorSubmit(e) {
+            e.preventDefault();
+            
+            if (courseVideos.length >= 999) {
+                showMessage("Maximum limit of 999 course videos reached.", "error");
+                return;
+            }
+
+            const mentorName = document.getElementById('mentor-name').value.trim();
+            const videoTitle = document.getElementById('course-video-title').value.trim();
+            const description = document.getElementById('course-description').value.trim();
+            const fileInput = document.getElementById('mentor-video-file');
+            
+            if (!mentorName || !videoTitle || !fileInput.files[0]) {
+                showMessage("Please fill in required fields and select a video file.", "error");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            setLoadingState(true, 'mentor');
+
+            try {
+                const videoUrl = URL.createObjectURL(file);
+                
+                const courseData = {
+                    type: 'course_video',
+                    mentor_name: mentorName,
+                    video_title: videoTitle,
+                    description: description || '',
+                    video_url: videoUrl,
+                    upload_date: new Date().toISOString(),
+                    file_size: formatFileSize(file.size)
+                };
+
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(courseData);
+                    
+                    if (result.isOk) {
+                        showMessage("Course video uploaded successfully!", "success");
+                        resetForm('mentor');
+                    } else {
+                        showMessage("Failed to upload course video. Please try again.", "error");
+                    }
+                } else {
+                    courseVideos.push({ ...courseData, __backendId: Date.now().toString() });
+                    updateAllDisplays();
+                    showMessage("Course video uploaded successfully!", "success");
+                    resetForm('mentor');
+                }
+            } catch (error) {
+                showMessage("An error occurred while uploading. Please try again.", "error");
+            } finally {
+                setLoadingState(false, 'mentor');
+            }
+        }
+
+        // Handle live session submission
+        async function handleLiveSessionSubmit(e) {
+            e.preventDefault();
+            
+            if (liveSessions.length >= 999) {
+                showMessage("Maximum limit of 999 live sessions reached.", "error");
+                return;
+            }
+
+            const mentorName = document.getElementById('session-mentor-name').value.trim();
+            const sessionTitle = document.getElementById('session-title').value.trim();
+            const sessionDate = document.getElementById('session-date').value;
+            const sessionTime = document.getElementById('session-time').value;
+            const meetingLink = document.getElementById('meeting-link').value.trim();
+            const description = document.getElementById('session-description').value.trim();
+            
+            if (!mentorName || !sessionTitle || !sessionDate || !sessionTime || !meetingLink) {
+                showMessage("Please fill in all required fields.", "error");
+                return;
+            }
+
+            // Validate URL format
+            try {
+                new URL(meetingLink);
+            } catch {
+                showMessage("Please enter a valid meeting link URL.", "error");
+                return;
+            }
+
+            setLoadingState(true, 'session');
+
+            try {
+                const sessionDateTime = new Date(`${sessionDate}T${sessionTime}`);
+                
+                const sessionData = {
+                    type: 'live_session',
+                    mentor_name: mentorName,
+                    session_title: sessionTitle,
+                    session_date: sessionDate,
+                    session_time: sessionTime,
+                    session_datetime: sessionDateTime.toISOString(),
+                    meeting_link: meetingLink,
+                    description: description || '',
+                    created_date: new Date().toISOString()
+                };
+
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(sessionData);
+                    
+                    if (result.isOk) {
+                        showMessage("Live session scheduled successfully!", "success");
+                        resetForm('session');
+                    } else {
+                        showMessage("Failed to schedule live session. Please try again.", "error");
+                    }
+                } else {
+                    liveSessions.push({ ...sessionData, __backendId: Date.now().toString() });
+                    updateAllDisplays();
+                    showMessage("Live session scheduled successfully!", "success");
+                    resetForm('session');
+                }
+            } catch (error) {
+                showMessage("An error occurred while scheduling. Please try again.", "error");
+            } finally {
+                setLoadingState(false, 'session');
+            }
+        }
+
+        // Update all displays
+        function updateAllDisplays() {
+            updateSubmissionsDisplay();
+            updateCourseVideosDisplay();
+            updateLiveSessionsDisplay();
+            updateStats();
+        }
+
+        // Update submissions display
+        function updateSubmissionsDisplay() {
+            const grid = document.getElementById('submissions-grid');
+            const mentorGrid = document.getElementById('mentor-submissions-grid');
+            const emptyState = document.getElementById('empty-state');
+            const countElement = document.getElementById('submission-count');
+
+            countElement.textContent = `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`;
+
+            const submissionHTML = submissions.map(submission => `
+                <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow" style="background-color: #ffffff;">
+                    <div class="aspect-video flex items-center justify-center" style="background-color: #f3f4f6;">
+                        <div class="text-center">
+                            <svg class="mx-auto h-16 w-16 mb-3" style="color: #dc2626;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-sm font-medium" style="color: #374151;">PDF Document</p>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2" style="color: #1e293b;">${submission.assignment_title}</h3>
+                        <p class="text-sm mb-1" style="color: #64748b;">Student: ${submission.student_name}</p>
+                        <p class="text-sm mb-1" style="color: #64748b;">Size: ${submission.file_size}</p>
+                        <p class="text-xs mb-3" style="color: #9ca3af;">Submitted: ${formatDate(submission.submission_date)}</p>
+                        <div class="space-y-2">
+                            <button onclick="viewPDF('${submission.__backendId}')" 
+                                    class="block w-full px-3 py-2 text-sm font-medium text-white text-center rounded-lg transition-colors hover:bg-blue-700"
+                                    style="background-color: #3b82f6;">
+                                View PDF
+                            </button>
+                            <button onclick="confirmDelete('${submission.__backendId}', 'assignment')" 
+                                    class="w-full px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:bg-red-700"
+                                    style="background-color: #dc2626;">
+                                Delete Assignment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (submissions.length === 0) {
+                grid.innerHTML = '';
+                mentorGrid.innerHTML = '<div class="col-span-full text-center py-8"><p style="color: #9ca3af;">No student submissions yet</p></div>';
+                emptyState.classList.remove('hidden');
+            } else {
+                grid.innerHTML = submissionHTML;
+                mentorGrid.innerHTML = submissionHTML;
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        // Update course videos display
+        function updateCourseVideosDisplay() {
+            const grid = document.getElementById('course-videos-grid');
+            const emptyState = document.getElementById('course-empty-state');
+
+            if (courseVideos.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            
+            grid.innerHTML = courseVideos.map(video => `
+                <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow" style="background-color: #ffffff;">
+                    <div class="video-thumbnail flex items-center justify-center">
+                        <video src="${video.video_url}" class="w-full h-full object-cover" controls preload="metadata">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2" style="color: #1e293b;">${video.video_title}</h3>
+                        <p class="text-sm mb-2" style="color: #64748b;">By: ${video.mentor_name}</p>
+                        ${video.description ? `<p class="text-sm mb-2" style="color: #64748b;">${video.description}</p>` : ''}
+                        <p class="text-sm mb-1" style="color: #64748b;">Size: ${video.file_size}</p>
+                        <p class="text-xs mb-3" style="color: #9ca3af;">Uploaded: ${formatDate(video.upload_date)}</p>
+                        <button onclick="confirmDelete('${video.__backendId}', 'course_video')" 
+                                class="w-full px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:bg-red-700"
+                                style="background-color: #dc2626;">
+                            Delete Video
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update live sessions display
+        function updateLiveSessionsDisplay() {
+            const grid = document.getElementById('live-sessions-grid');
+            const emptyState = document.getElementById('live-sessions-empty-state');
+            const countElement = document.getElementById('live-session-count');
+
+            countElement.textContent = `${liveSessions.length} session${liveSessions.length !== 1 ? 's' : ''}`;
+
+            if (liveSessions.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            
+            // Sort sessions by date/time
+            const sortedSessions = [...liveSessions].sort((a, b) => 
+                new Date(a.session_datetime) - new Date(b.session_datetime)
+            );
+            
+            grid.innerHTML = sortedSessions.map(session => {
+                const sessionDateTime = new Date(session.session_datetime);
+                const now = new Date();
+                const isUpcoming = sessionDateTime > now;
+                const isPast = sessionDateTime < now;
+                const isToday = sessionDateTime.toDateString() === now.toDateString();
+                
+                let statusBadge = '';
+                let buttonText = 'Join Meeting';
+                let buttonColor = '#16a34a';
+                
+                if (isPast) {
+                    statusBadge = '<span class="px-2 py-1 text-xs font-medium rounded-full" style="background-color: #fee2e2; color: #dc2626;">Past</span>';
+                    buttonText = 'Meeting Ended';
+                    buttonColor = '#6b7280';
+                } else if (isToday) {
+                    statusBadge = '<span class="px-2 py-1 text-xs font-medium rounded-full" style="background-color: #fef3c7; color: #d97706;">Today</span>';
+                } else {
+                    statusBadge = '<span class="px-2 py-1 text-xs font-medium rounded-full" style="background-color: #dcfce7; color: #16a34a;">Upcoming</span>';
+                }
+
+                return `
+                    <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow" style="background-color: #ffffff;">
+                        <div class="p-4 border-b border-gray-100" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+                            <div class="flex items-center justify-between mb-2">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                ${statusBadge}
+                            </div>
+                            <h3 class="font-semibold text-lg text-white mb-1">${session.session_title}</h3>
+                            <p class="text-sm text-purple-100">Live Session</p>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm mb-2" style="color: #64748b;">Mentor: ${session.mentor_name}</p>
+                            <p class="text-sm mb-2" style="color: #64748b;">Date: ${formatDate(session.session_datetime)}</p>
+                            ${session.description ? `<p class="text-sm mb-3" style="color: #64748b;">${session.description}</p>` : ''}
+                            <div class="space-y-2">
+                                <button onclick="joinMeeting('${session.meeting_link}', ${isPast})" 
+                                        class="block w-full px-3 py-2 text-sm font-medium text-white text-center rounded-lg transition-colors ${isPast ? 'cursor-not-allowed opacity-60' : 'hover:opacity-90'}"
+                                        style="background-color: ${buttonColor};" ${isPast ? 'disabled' : ''}>
+                                    ${buttonText}
+                                </button>
+                                <button onclick="confirmDelete('${session.__backendId}', 'live_session')" 
+                                        class="w-full px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:bg-red-700"
+                                        style="background-color: #dc2626;">
+                                    Delete Session
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('total-submissions').textContent = submissions.length;
+            document.getElementById('course-videos').textContent = courseVideos.length;
+        }
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function setLoadingState(loading, type) {
+            const prefix = type === 'mentor' ? 'mentor-' : (type === 'session' ? 'session-' : '');
+            const submitBtn = document.getElementById(prefix + 'submit-btn');
+            const submitText = document.getElementById(prefix + 'submit-text');
+            const submitSpinner = document.getElementById(prefix + 'submit-spinner');
+
+            if (loading) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+                submitText.classList.add('hidden');
+                submitSpinner.classList.remove('hidden');
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitText.classList.remove('hidden');
+                submitSpinner.classList.add('hidden');
+            }
+        }
+
+        function resetForm(type) {
+            if (type === 'session') {
+                const form = document.getElementById('live-session-form');
+                form.reset();
+                return;
+            }
+            
+            const prefix = type === 'mentor' ? 'mentor-' : '';
+            const form = document.getElementById(prefix + 'upload-form');
+            const uploadContent = document.getElementById(prefix + 'upload-content');
+            const fileInfo = document.getElementById(prefix + 'file-info');
+
+            form.reset();
+            uploadContent.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
+        }
+
+        function showMessage(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Delete confirmation and handling
+        function confirmDelete(itemId, itemType) {
+            const itemName = itemType === 'assignment' ? 'assignment' : 'course video';
+            const confirmButton = event.target;
+            const originalText = confirmButton.textContent;
+            
+            // Change button to confirmation state
+            confirmButton.textContent = 'Click again to confirm';
+            confirmButton.style.backgroundColor = '#991b1b';
+            confirmButton.onclick = () => handleDelete(itemId, itemType);
+            
+            // Reset after 3 seconds if not clicked
+            setTimeout(() => {
+                confirmButton.textContent = originalText;
+                confirmButton.style.backgroundColor = '#dc2626';
+                confirmButton.onclick = () => confirmDelete(itemId, itemType);
+            }, 3000);
+        }
+
+        async function handleDelete(itemId, itemType) {
+            let itemToDelete;
+            
+            if (itemType === 'assignment') {
+                itemToDelete = submissions.find(s => s.__backendId === itemId);
+            } else if (itemType === 'course_video') {
+                itemToDelete = courseVideos.find(v => v.__backendId === itemId);
+            } else if (itemType === 'live_session') {
+                itemToDelete = liveSessions.find(s => s.__backendId === itemId);
+            }
+            
+            if (!itemToDelete) {
+                showMessage("Item not found.", "error");
+                return;
+            }
+
+            try {
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.delete(itemToDelete);
+                    
+                    if (result.isOk) {
+                        const itemName = itemType === 'assignment' ? 'Assignment' : 
+                                       itemType === 'course_video' ? 'Course video' : 'Live session';
+                        showMessage(`${itemName} deleted successfully!`, "success");
+                    } else {
+                        showMessage("Failed to delete item. Please try again.", "error");
+                    }
+                } else {
+                    // Fallback for when SDK is not available
+                    if (itemType === 'assignment') {
+                        submissions = submissions.filter(s => s.__backendId !== itemId);
+                    } else if (itemType === 'course_video') {
+                        courseVideos = courseVideos.filter(v => v.__backendId !== itemId);
+                    } else if (itemType === 'live_session') {
+                        liveSessions = liveSessions.filter(s => s.__backendId !== itemId);
+                    }
+                    updateAllDisplays();
+                    const itemName = itemType === 'assignment' ? 'Assignment' : 
+                                   itemType === 'course_video' ? 'Course video' : 'Live session';
+                    showMessage(`${itemName} deleted successfully!`, "success");
+                }
+            } catch (error) {
+                showMessage("An error occurred while deleting. Please try again.", "error");
+            }
+        }
+
+        // Join meeting function
+        function joinMeeting(meetingLink, isPast) {
+            if (isPast) {
+                showMessage("This meeting has already ended.", "error");
+                return;
+            }
+
+            try {
+                // Open meeting link in new tab
+                window.open(meetingLink, '_blank', 'noopener,noreferrer');
+                showMessage("Opening meeting in new tab...", "success");
+            } catch (error) {
+                showMessage("Failed to open meeting link. Please copy the link manually.", "error");
+            }
+        }
+
+        // PDF viewing functions
+        let currentPDFData = null;
+
+        function viewPDF(submissionId) {
+            const submission = submissions.find(s => s.__backendId === submissionId);
+            if (!submission) {
+                showMessage("PDF not found.", "error");
+                return;
+            }
+
+            currentPDFData = submission;
+            
+            // Update modal content
+            document.getElementById('pdf-modal-title').textContent = submission.assignment_title;
+            document.getElementById('pdf-student-name').textContent = `Student: ${submission.student_name}`;
+            document.getElementById('pdf-submission-date').textContent = `Submitted: ${formatDate(submission.submission_date)}`;
+            
+            // Load PDF in iframe
+            const pdfViewer = document.getElementById('pdf-viewer');
+            pdfViewer.src = submission.pdf_url;
+            
+            // Show modal
+            document.getElementById('pdf-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePDFModal() {
+            document.getElementById('pdf-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('pdf-viewer').src = '';
+            currentPDFData = null;
+        }
+
+        function downloadPDF() {
+            if (!currentPDFData) {
+                showMessage("No PDF available for download.", "error");
+                return;
+            }
+
+            try {
+                const link = document.createElement('a');
+                link.href = currentPDFData.pdf_url;
+                link.download = `${currentPDFData.student_name}_${currentPDFData.assignment_title}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showMessage("PDF download started!", "success");
+            } catch (error) {
+                showMessage("Failed to download PDF. Please try again.", "error");
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('pdf-modal');
+            if (e.target === modal) {
+                closePDFModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePDFModal();
+            }
+        });
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994274fc56b1802e',t:'MTc2MTQwMzA5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
